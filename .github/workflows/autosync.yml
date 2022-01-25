@@ -16,23 +16,24 @@ jobs:
              echo "版本号为：${VERSION}"
              URL="https://github.com/pineappleEA/pineapple-src/releases/download/EA-${VERSION}/Windows-Yuzu-EA-${VERSION}.7z"
              echo "链接为：${URL}"
+             echo "VERSION=${VERSION}" >> $GITHUB_ENV
+             echo "URL=${URL}" >> $GITHUB_ENV
       - name: 下载最新构建
         run: |
              cd /tmp
-             curl -fL "${URL}" -o "/tmp/Windows-Yuzu-EA-${VERSION}.7z"
+             echo "下载 ${{ env.URL }}"
+             curl -fL "${{ env.URL }}" -o "/tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z"
       - name: 安装 Python
         uses: actions/setup-python@v2.3.1
       - name: 安装阿里云盘 cli
         run: pip install aliyunpan
       - name: 删除旧的构建
         continue-on-error: true
-        env:
-          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$(($VERSION-5)).7z
+        run: |
+          echo "尝试删除 NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-5)).7z"
+          aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-5)).7z
       - name: 上传构建到阿里云盘
-        env:
-          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${REFRESH_TOKEN} upload /tmp/Windows-Yuzu-EA-${VERSION}.7z NSEmuHelper/YuzuEAMirror
+        run: aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} upload /tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z NSEmuHelper/YuzuEAMirror
 
   YuzuMainline:
     runs-on: ubuntu-latest
@@ -45,23 +46,24 @@ jobs:
              URL=$(curl https://api.github.com/repos/yuzu-emu/yuzu-mainline/releases/latest | grep "browser_download_url" | grep "yuzu-windows-msvc" | grep "7z")
              URL=${URL// /};URL=${URL//\"/};URL=${URL//browser_download_url:/};URL=${URL//,/}
              echo "链接为：${URL}"
+             echo "VERSION=${VERSION}" >> $GITHUB_ENV
+             echo "URL=${URL}" >> $GITHUB_ENV
       - name: 下载最新构建
         run: |
              cd /tmp
-             curl -fL "${URL}" -o "/tmp/yuzu-windows-msvc-${VERSION}.7z"
+             echo "下载 ${{ env.URL }}"
+             curl -fL "${{ env.URL }}" -o "/tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z"
       - name: 安装 Python
         uses: actions/setup-python@v2.3.1
       - name: 安装阿里云盘 cli
         run: pip install aliyunpan
       - name: 删除旧的构建
         continue-on-error: true
-        env:
-          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$(($VERSION-5)).7z
+        run: |
+          echo "尝试删除 NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-5)).7z"
+          aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-5)).7z
       - name: 上传构建到阿里云盘
-        env:
-          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${REFRESH_TOKEN} upload /tmp/yuzu-windows-msvc-${VERSION}.7z NSEmuHelper/YuzuMainlineMirror
+        run: aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} upload /tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z NSEmuHelper/YuzuMainlineMirror
 
   RyujinxMainline:
     runs-on: ubuntu-latest
@@ -73,21 +75,22 @@ jobs:
              echo "版本号为：${VERSION}"
              URL="https://github.com/Ryujinx/release-channel-master/releases/download/${VERSION}/ryujinx-${VERSION}-win_x64.zip"
              echo "链接为：${URL}"
+             echo "VERSION=${VERSION}" >> $GITHUB_ENV
+             echo "URL=${URL}" >> $GITHUB_ENV
       - name: 下载最新构建
         run: |
              cd /tmp
-             curl -fL "${URL}" -o "/tmp/ryujinx-${VERSION}-win_x64.zip"
+             echo "下载 ${{ env.URL }}"
+             curl -fL "${{ env.URL }}" -o "/tmp/ryujinx-${{ env.VERSION }}-win_x64.zip"
       - name: 安装 Python
         uses: actions/setup-python@v2.3.1
       - name: 安装阿里云盘 cli
         run: pip install aliyunpan
       - name: 删除旧的构建
         continue-on-error: true
-        env:
-          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/RyujinxMainline/ryujinx-$(($VERSION-5))-win_x64.zip
+        run: |
+          echo "尝试删除 NSEmuHelper/RyujinxMainline/ryujinx-$((${{ env.VERSION }}-5))-win_x64.zip"
+          aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} rm NSEmuHelper/RyujinxMainline/ryujinx-$((${{ env.VERSION }}-5))-win_x64.zip
       - name: 上传构建到阿里云盘
-        env:
-          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${REFRESH_TOKEN} upload /tmp/ryujinx-${VERSION}-win_x64.zip NSEmuHelper/RyujinxMainline
+        run: aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} upload /tmp/ryujinx-${{ env.VERSION }}-win_x64.zip NSEmuHelper/RyujinxMainline
 
