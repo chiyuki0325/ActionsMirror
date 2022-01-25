@@ -18,7 +18,8 @@ jobs:
              echo "链接为：${URL}"
              mkdir -p /data
              cd /data
-             curl -fsL "${URL}" -O "/data/Windows-Yuzu-EA-${VERSION}.7z"
+             curl -fL "${URL}" -O "/data/Windows-Yuzu-EA-${VERSION}.7z"
+             ls /data
       - name: 上传构建到 WebDAV
         uses: bxb100/action-upload-webdav@v1
         with:
