@@ -17,7 +17,7 @@ jobs:
              URL="https://github.com/pineappleEA/pineapple-src/releases/download/EA-${VERSION}/Windows-Yuzu-EA-${VERSION}.7z"
              echo "链接为：${URL}"
              cd /tmp
-             curl -fL "${URL}" -O "/tmp/Windows-Yuzu-EA-${VERSION}.7z"
+             curl -fL "${URL}" -o "/tmp/Windows-Yuzu-EA-${VERSION}.7z"
              ls /tmp
       - name: 上传构建到 WebDAV
         uses: bxb100/action-upload-webdav@v1
