@@ -1,4 +1,4 @@
-name: Yuzu 预先测试版自动同步
+name: NS 模拟器助手自动镜像同步
 
 on:
   workflow_dispatch:
