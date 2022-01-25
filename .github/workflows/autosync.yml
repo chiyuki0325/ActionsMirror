@@ -30,7 +30,7 @@ jobs:
       - name: 删除旧的构建
         continue-on-error: true
         env:
-          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         run: |
           echo "尝试删除 NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-5)).7z"
           aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-5)).7z
@@ -64,7 +64,7 @@ jobs:
       - name: 删除旧的构建
         continue-on-error: true
         env:
-          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         run: |
           echo "尝试删除 NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-5)).7z"
           aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-5)).7z
@@ -97,7 +97,7 @@ jobs:
       - name: 删除旧的构建
         continue-on-error: true
         env:
-          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
         run: |
           echo "尝试删除 NSEmuHelper/RyujinxMainline/ryujinx-$((${{ env.VERSION }}-5))-win_x64.zip"
           aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/RyujinxMainline/ryujinx-$((${{ env.VERSION }}-5))-win_x64.zip
