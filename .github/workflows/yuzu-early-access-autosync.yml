@@ -9,21 +9,28 @@ jobs:
   AutoSynchronization:
     runs-on: ubuntu-latest
     steps:
-      - name: 获取最新构建版本号和 URL 并且下载
+      - name: 获取最新构建版本号和 URL
         run: |
              VERSION=$(curl https://api.github.com/repos/pineappleea/pineapple-src/releases | grep "tag_name\": \"EA" | head -1)
              VERSION=${VERSION// /};VERSION=${VERSION//\"/};VERSION=${VERSION//tag_name:EA-/};VERSION=${VERSION//,/}
              echo "版本号为：${VERSION}"
              URL="https://github.com/pineappleEA/pineapple-src/releases/download/EA-${VERSION}/Windows-Yuzu-EA-${VERSION}.7z"
              echo "链接为：${URL}"
+      - name: 下载最新构建
+        run: |
              cd /tmp
              curl -fL "${URL}" -o "/tmp/Windows-Yuzu-EA-${VERSION}.7z"
-             ls /tmp
-      - name: 上传构建到 WebDAV
-        uses: bxb100/action-upload-webdav@v1
-        with:
-          webdav_address: ${{secrets.WEBDAV_ADDRESS}}
-          webdav_username: ${{secrets.WEBDAV_USERNAME}}
-          webdav_password: ${{secrets.WEBDAV_PASSWORD}}
-          webdav_upload_path: "/123pan/YuzuEAMirror"
-          files: "/tmp/Windows-Yuzu-EA-*.7z"
+      - name: 安装 Python
+        uses: actions/setup-python@v2.3.1
+      - name: 安装阿里云盘 cli
+        run: pip install aliyunpan
+      - name: 删除旧的构建
+        continue-on-error: true
+        env:
+          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
+        run: aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$(($VERSION-5)).7z
+      - name: 上传构建到阿里云盘
+        env:
+          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
+        run: aliyunpan-cli -t ${REFRESH_TOKEN} upload /tmp/Windows-Yuzu-EA-${VERSION}.7z NSEmuHelper/YuzuEAMirror
+
