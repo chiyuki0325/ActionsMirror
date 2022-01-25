@@ -29,11 +29,15 @@ jobs:
         run: pip install aliyunpan
       - name: 删除旧的构建
         continue-on-error: true
+        env:
+          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
         run: |
           echo "尝试删除 NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-5)).7z"
-          aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-5)).7z
+          aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-5)).7z
       - name: 上传构建到阿里云盘
-        run: aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} upload /tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z NSEmuHelper/YuzuEAMirror
+        env:
+          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
+        run: aliyunpan-cli -t ${REFRESH_TOKEN} upload /tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z NSEmuHelper/YuzuEAMirror
 
   YuzuMainline:
     runs-on: ubuntu-latest
@@ -59,11 +63,15 @@ jobs:
         run: pip install aliyunpan
       - name: 删除旧的构建
         continue-on-error: true
+        env:
+          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
         run: |
           echo "尝试删除 NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-5)).7z"
-          aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-5)).7z
+          aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-5)).7z
       - name: 上传构建到阿里云盘
-        run: aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} upload /tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z NSEmuHelper/YuzuMainlineMirror
+        env:
+          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
+        run: aliyunpan-cli -t ${REFRESH_TOKEN} upload /tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z NSEmuHelper/YuzuMainlineMirror
 
   RyujinxMainline:
     runs-on: ubuntu-latest
@@ -88,9 +96,13 @@ jobs:
         run: pip install aliyunpan
       - name: 删除旧的构建
         continue-on-error: true
+        env:
+          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
         run: |
           echo "尝试删除 NSEmuHelper/RyujinxMainline/ryujinx-$((${{ env.VERSION }}-5))-win_x64.zip"
-          aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} rm NSEmuHelper/RyujinxMainline/ryujinx-$((${{ env.VERSION }}-5))-win_x64.zip
+          aliyunpan-cli -t ${REFRESH_TOKEN} rm NSEmuHelper/RyujinxMainline/ryujinx-$((${{ env.VERSION }}-5))-win_x64.zip
       - name: 上传构建到阿里云盘
-        run: aliyunpan-cli -t ${{secrets.REFRESH_TOKEN}} upload /tmp/ryujinx-${{ env.VERSION }}-win_x64.zip NSEmuHelper/RyujinxMainline
+        env:
+          REFRESH_TOKEN: ${{secrets.REFRESH_TOKEN}}
+        run: aliyunpan-cli -t ${REFRESH_TOKEN} upload /tmp/ryujinx-${{ env.VERSION }}-win_x64.zip NSEmuHelper/RyujinxMainline
 
