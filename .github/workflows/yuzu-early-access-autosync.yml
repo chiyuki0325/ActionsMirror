@@ -25,5 +25,5 @@ jobs:
           webdav_address: ${{secrets.WEBDAV_ADDRESS}}
           webdav_username: ${{secrets.WEBDAV_USERNAME}}
           webdav_password: ${{secrets.WEBDAV_PASSWORD}}
-          webdav_upload_path: "/123pan/YuzuEAMirror"
+          webdav_upload_path: "/dav/123pan/YuzuEAMirror"
           files: "/tmp/Windows-Yuzu-EA-*.7z"
