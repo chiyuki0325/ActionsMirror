@@ -3,7 +3,7 @@ name: Yuzu 预先测试版自动同步
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 12 * * ?"
+    - cron: '0 0 12 * * ?'
 
 jobs:
   自动同步:
