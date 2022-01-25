@@ -25,5 +25,13 @@ jobs:
           webdav_address: ${{secrets.WEBDAV_ADDRESS}}
           webdav_username: ${{secrets.WEBDAV_USERNAME}}
           webdav_password: ${{secrets.WEBDAV_PASSWORD}}
-          webdav_upload_path: "/dav/123pan/YuzuEAMirror"
+          webdav_upload_path: "/123pan/YuzuEAMirror"
+          files: "/tmp/Windows-Yuzu-EA-*.7z"
+      - name: 上传构建到 WebDAV 2
+        uses: bxb100/action-upload-webdav@v1
+        with:
+          webdav_address: ${{secrets.WEBDAV_ADDRESS}}
+          webdav_username: ${{secrets.WEBDAV_USERNAME}}
+          webdav_password: ${{secrets.WEBDAV_PASSWORD}}
+          webdav_upload_path: "/模拟器游戏1"
           files: "/tmp/Windows-Yuzu-EA-*.7z"
