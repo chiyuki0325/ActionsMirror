@@ -9,9 +9,20 @@ jobs:
   AutoSynchronization:
     runs-on: ubuntu-latest
     steps:
-      - name: 获取最新构建 URL
-        run: URL=$(curl https://api.github.com/repos/pineappleea/pineapple-src/releases | grep Windows | grep browser_download_url | head -1);
-             URL=${URL// /};
-             URL=${URL//\"/};
-             URL=${URL//browser_download_url\:/};
-             echo $URL;
+      - name: 获取最新构建版本号和 URL
+        run: |
+             VERSION=$(curl https://api.github.com/repos/pineappleea/pineapple-src/releases | grep "tag_name\": \"EA" | head -1)
+             VERSION=${VERSION// /};VERSION=${VERSION//\"/};VERSION=${VERSION//tag_name:EA-/};VERSION=${VERSION//,/}
+             echo "版本号为：${VERSION}"
+             URL="https://github.com/pineappleEA/pineapple-src/releases/download/EA-${VERSION}/Windows-Yuzu-EA-${VERSION}.7z"
+             echo "链接为：${URL}"
+      - name: 下载最新构建
+        run: curl -fsL $URL -O "Windows-Yuzu-EA-${VERSION}.7z"
+      - name: 上传构建到 WebDAV
+        uses: bxb100/action-upload-webdav@v1
+        with:
+          webdav_address: ${{secrets.WEBDAV_ADDRESS}}
+          webdav_username: ${{secrets.WEBDAV_USERNAME}}
+          webdav_password: ${{secrets.WEBDAV_PASSWORD}}
+          webdav_upload_path: "/123pan/YuzuEAMirror"
+          files: "./Windows-Yuzu-EA-*.7z"
