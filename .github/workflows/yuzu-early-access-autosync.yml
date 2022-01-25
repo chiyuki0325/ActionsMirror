@@ -9,15 +9,14 @@ jobs:
   AutoSynchronization:
     runs-on: ubuntu-latest
     steps:
-      - name: 获取最新构建版本号和 URL
+      - name: 获取最新构建版本号和 URL 并且下载
         run: |
              VERSION=$(curl https://api.github.com/repos/pineappleea/pineapple-src/releases | grep "tag_name\": \"EA" | head -1)
              VERSION=${VERSION// /};VERSION=${VERSION//\"/};VERSION=${VERSION//tag_name:EA-/};VERSION=${VERSION//,/}
              echo "版本号为：${VERSION}"
              URL="https://github.com/pineappleEA/pineapple-src/releases/download/EA-${VERSION}/Windows-Yuzu-EA-${VERSION}.7z"
              echo "链接为：${URL}"
-      - name: 下载最新构建
-        run: curl -fsL $URL -O "Windows-Yuzu-EA-${VERSION}.7z"
+             curl -fsL "${URL}" -O "Windows-Yuzu-EA-${VERSION}.7z"
       - name: 上传构建到 WebDAV
         uses: bxb100/action-upload-webdav@v1
         with:
