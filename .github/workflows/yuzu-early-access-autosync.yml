@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 获取最新构建 URL
-        run: URL=$(curl https://api.github.com/repos/pineappleea/pineapple-src/releases | grep Windows | grep browser_download_url | head -1)
-             URL=${URL// /}
-             URL=${URL//\"/}
-             URL=${URL//browser_download_url\:/}
-             echo $URL
+        run: URL=$(curl https://api.github.com/repos/pineappleea/pineapple-src/releases | grep Windows | grep browser_download_url | head -1);
+             URL=${URL// /};
+             URL=${URL//\"/};
+             URL=${URL//browser_download_url\:/};
+             echo $URL;
