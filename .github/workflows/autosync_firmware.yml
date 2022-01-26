@@ -43,8 +43,8 @@ jobs:
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
         run: |
-          VERSION=(${{ env.VERSION }})
-          VERSION2=(${{ env.VERSION2 }})
+          VERSION=${{ env.VERSION }}
+          VERSION2=${{ env.VERSION2 }}
           aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION/ /_}.zip" NSEmuHelper/NSFirmwareMirror
           aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION2/ /_}.zip" NSEmuHelper/NSFirmwareMirror
 
