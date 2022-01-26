@@ -15,19 +15,19 @@ jobs:
       - name: 安装阿里云盘 cli
         run: pip install aliyunpan
         
-      - name: 下载最新固件
+      - name: 下载最新的 2 个固件
         run: |
              cd /tmp
-             FWLIST_LATEST_STR=$(curl "https://api.yidaozhan.gq/api/ns-firmware-latest.php")
-             FWLIST_LATEST_ARR=($FWLIST_LATEST_STR)
-             echo "FWLIST_LATEST_STR=${FWLIST_LATEST_STR}" >> $GITHUB_ENV
-             for fw_version in ${FWLIST_LATEST_ARR[@]}
-             do 
-               echo "下载 ${fw_version}"
-               curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Firmware%20${fw_version}.zip" -o "/tmp/Firmware ${fw_version}.zip"
-             done
+             VERSION=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -2 | tail -1)
+             VERSION2=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -3 | tail -1)
+             echo "下载 ${VERSION}"
+             echo "VERSION=${VERSION}" >> $GITHUB_ENV
+             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION}.zip" -o "${VERSION}.zip"
+             echo "下载 ${VERSION2}"
+             echo "VERSION2=${VERSION2}" >> $GITHUB_ENV
+             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION2}.zip" -o "${VERSION2}.zip"
              
-      - name: 清空旧的固件
+      - name: 清空上次同步的固件
         continue-on-error: true
         env:
           refreshtoken: ${{ secrets.REFRESH_TOKEN }}
@@ -43,9 +43,8 @@ jobs:
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
         run: |
-          FWLIST_LATEST_ARR=(${{ env.FWLIST_LATEST_STR }})
-          for fw_version in ${FWLIST_LATEST_ARR[@]}
-          do
-            aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/Firmware ${fw_version}.zip" NSEmuHelper/NSFirmwareMirror
-          done
+          VERSION=(${{ env.VERSION }})
+          VERSION2=(${{ env.VERSION2 }})
+          aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/${VERSION}.zip" NSEmuHelper/NSFirmwareMirror
+          aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/${VERSION2}.zip" NSEmuHelper/NSFirmwareMirror
 
