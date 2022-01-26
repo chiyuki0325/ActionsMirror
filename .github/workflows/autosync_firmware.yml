@@ -22,10 +22,10 @@ jobs:
              VERSION2=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -3 | tail -1)
              echo "下载 ${VERSION}"
              echo "VERSION=${VERSION}" >> $GITHUB_ENV
-             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION}.zip" -o "${VERSION}.zip"
+             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION}.zip" -o "${VERSION/ /_}.zip"
              echo "下载 ${VERSION2}"
              echo "VERSION2=${VERSION2}" >> $GITHUB_ENV
-             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION2}.zip" -o "${VERSION2}.zip"
+             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION2}.zip" -o "${VERSION2/ /_}.zip"
              
       - name: 清空上次同步的固件
         continue-on-error: true
@@ -36,7 +36,7 @@ jobs:
           FWTODELETE_ALI_ARR=($(aliyunpan-cli -t ${refreshtoken} ls NSEmuHelper/NSFirmwareMirror | sed "s/\t/ /g")); echo ${FWTODELETE_ALI_ARR[@]}
           for fw_name in ${FWTODELETE_ALI_ARR[@]}
           do
-            aliyunpan-cli -t ${refreshtoken} rm "NSEmuHelper/NSFirmwareMirror/${fw_name/_/ }"
+            aliyunpan-cli -t ${refreshtoken} rm "NSEmuHelper/NSFirmwareMirror/${fw_name}"
           done
          
       - name: 上传固件到阿里云盘
@@ -45,6 +45,6 @@ jobs:
         run: |
           VERSION=(${{ env.VERSION }})
           VERSION2=(${{ env.VERSION2 }})
-          aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/${VERSION}.zip" NSEmuHelper/NSFirmwareMirror
-          aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/${VERSION2}.zip" NSEmuHelper/NSFirmwareMirror
+          aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/${VERSION/ /_}.zip" NSEmuHelper/NSFirmwareMirror
+          aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/${VERSION2/ /_}.zip" NSEmuHelper/NSFirmwareMirror
 
