@@ -3,7 +3,7 @@ name: NS 模拟器助手自动镜像同步
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0/3 * * *'
 
 jobs:
   YuzuEA:
@@ -18,26 +18,40 @@ jobs:
              echo "链接为：${URL}"
              echo "VERSION=${VERSION}" >> $GITHUB_ENV
              echo "URL=${URL}" >> $GITHUB_ENV
-      - name: 下载最新构建
-        run: |
-             cd /tmp
-             echo "下载 ${{ env.URL }}"
-             curl -fL "${{ env.URL }}" -o "/tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z"
       - name: 安装 Python
         uses: actions/setup-python@v2.3.1
       - name: 安装阿里云盘 cli
         run: pip install aliyunpan
-      - name: 删除旧的构建
-        continue-on-error: true
+      - name: 检查构建是否重复
         env:
           refreshtoken: ${{ secrets.REFRESH_TOKEN }}
         run: |
-          echo "尝试删除 NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-5)).7z"
+          BUILDS_LIST=$(aliyunpan-cli -t ${refreshtoken} ls NSEmuHelper/YuzuEAMirror)
+          echo "BUILDS_LIST=${BUILDS_LIST}" >> $GITHUB_ENV
+      - name: 下载最新构建
+        if: ${{ contains(env.BUILDS_LIST,env.VERSION) }}
+        run: |
+             cd /tmp
+             echo "下载 ${{ env.URL }}"
+             curl -fL "${{ env.URL }}" -o "/tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z"
+      - name: 删除旧的构建
+        continue-on-error: true
+        if: ${{ contains(env.BUILDS_LIST,env.VERSION) }}
+        env:
+          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          echo "尝试删除最新版本五个版本之前的构建"
           aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-5)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-6)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-7)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-8)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-9)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuEAMirror/Windows-Yuzu-EA-$((${{ env.VERSION }}-10)).7z
       - name: 上传构建到阿里云盘
+        if: ${{ contains(env.BUILDS_LIST,env.VERSION) }}
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${refreshtoken} upload /tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z NSEmuHelper/YuzuEAMirror
+        run: aliyunpan-cli -t ${refreshtoken} upload -f /tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z NSEmuHelper/YuzuEAMirror
 
   YuzuMainline:
     runs-on: ubuntu-latest
@@ -52,26 +66,40 @@ jobs:
              echo "链接为：${URL}"
              echo "VERSION=${VERSION}" >> $GITHUB_ENV
              echo "URL=${URL}" >> $GITHUB_ENV
-      - name: 下载最新构建
-        run: |
-             cd /tmp
-             echo "下载 ${{ env.URL }}"
-             curl -fL "${{ env.URL }}" -o "/tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z"
       - name: 安装 Python
         uses: actions/setup-python@v2.3.1
       - name: 安装阿里云盘 cli
         run: pip install aliyunpan
-      - name: 删除旧的构建
-        continue-on-error: true
+      - name: 检查构建是否重复
         env:
           refreshtoken: ${{ secrets.REFRESH_TOKEN }}
         run: |
-          echo "尝试删除 NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-5)).7z"
+          BUILDS_LIST=$(aliyunpan-cli -t ${refreshtoken} ls NSEmuHelper/YuzuMainlineMirror)
+          echo "BUILDS_LIST=${BUILDS_LIST}" >> $GITHUB_ENV
+      - name: 下载最新构建
+        if: ${{ contains(env.BUILDS_LIST,env.VERSION) }}
+        run: |
+             cd /tmp
+             echo "下载 ${{ env.URL }}"
+             curl -fL "${{ env.URL }}" -o "/tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z"
+      - name: 删除旧的构建
+        continue-on-error: true
+        if: ${{ contains(env.BUILDS_LIST,env.VERSION) }}
+        env:
+          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          echo "尝试删除最新版本五个版本之前的构建"
           aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-5)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-6)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-7)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-8)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-9)).7z
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/YuzuMainlineMirror/yuzu-windows-msvc-$((${{ env.VERSION }}-10)).7z
       - name: 上传构建到阿里云盘
+        if: ${{ contains(env.BUILDS_LIST,env.VERSION) }}
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${refreshtoken} upload /tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z NSEmuHelper/YuzuMainlineMirror
+        run: aliyunpan-cli -t ${refreshtoken} upload -f /tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z NSEmuHelper/YuzuMainlineMirror
 
   RyujinxMainline:
     runs-on: ubuntu-latest
@@ -85,24 +113,39 @@ jobs:
              echo "链接为：${URL}"
              echo "VERSION=${VERSION}" >> $GITHUB_ENV
              echo "URL=${URL}" >> $GITHUB_ENV
-      - name: 下载最新构建
-        run: |
-             cd /tmp
-             echo "下载 ${{ env.URL }}"
-             curl -fL "${{ env.URL }}" -o "/tmp/ryujinx-${{ env.VERSION }}-win_x64.zip"
       - name: 安装 Python
         uses: actions/setup-python@v2.3.1
       - name: 安装阿里云盘 cli
         run: pip install aliyunpan
-      - name: 删除旧的构建
-        continue-on-error: true
+      - name: 检查构建是否重复
         env:
           refreshtoken: ${{ secrets.REFRESH_TOKEN }}
         run: |
-          echo "尝试删除 NSEmuHelper/RyujinxMainline/ryujinx-$((${{ env.VERSION }}-5))-win_x64.zip"
-          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxMainlineMirror/ryujinx-$((${{ env.VERSION }}-5))-win_x64.zip
+          BUILDS_LIST=$(aliyunpan-cli -t ${refreshtoken} ls NSEmuHelper/RyujinxMainlineMirror)
+          echo "BUILDS_LIST=${BUILDS_LIST}" >> $GITHUB_ENV
+      - name: 下载最新构建
+        if: ${{ contains(env.BUILDS_LIST,env.VERSION) }}
+        run: |
+             cd /tmp
+             echo "下载 ${{ env.URL }}"
+             curl -fL "${{ env.URL }}" -o "/tmp/ryujinx-${{ env.VERSION }}-win_x64.zip"
+      - name: 删除旧的构建
+        continue-on-error: true
+        if: ${{ contains(env.BUILDS_LIST,env.VERSION) }}
+        env:
+          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
+        run: |
+          SMALLVERSION=$(echo ${VERSION//./\\n} | tail -1)
+          echo "尝试删除最新版本五个版本之前的构建"
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxMainlineMirror/ryujinx-$((SMALLVERSION-5))-win_x64.zip
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxMainlineMirror/ryujinx-$((SMALLVERSION-6))-win_x64.zip
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxMainlineMirror/ryujinx-$((SMALLVERSION-7))-win_x64.zip
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxMainlineMirror/ryujinx-$((SMALLVERSION-8))-win_x64.zip
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxMainlineMirror/ryujinx-$((SMALLVERSION-9))-win_x64.zip
+          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxMainlineMirror/ryujinx-$((SMALLVERSION-10))-win_x64.zip
       - name: 上传构建到阿里云盘
+        if: ${{ contains(env.BUILDS_LIST,env.VERSION) }}
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${refreshtoken} upload /tmp/ryujinx-${{ env.VERSION }}-win_x64.zip NSEmuHelper/RyujinxMainlineMirror
+        run: aliyunpan-cli -t ${refreshtoken} upload -f /tmp/ryujinx-${{ env.VERSION }}-win_x64.zip NSEmuHelper/RyujinxMainlineMirror
 
