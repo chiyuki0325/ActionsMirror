@@ -17,7 +17,7 @@ jobs:
         
       - name: 下载最新的 2 个固件
         run: |
-             cd /tmp
+             cd $HOME
              VERSION=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -2 | tail -1)
              VERSION2=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -3 | tail -1)
              echo "下载 ${VERSION}"
@@ -45,6 +45,6 @@ jobs:
         run: |
           VERSION=(${{ env.VERSION }})
           VERSION2=(${{ env.VERSION2 }})
-          aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/${VERSION/ /_}.zip" NSEmuHelper/NSFirmwareMirror
-          aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/${VERSION2/ /_}.zip" NSEmuHelper/NSFirmwareMirror
+          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION/ /_}.zip" NSEmuHelper/NSFirmwareMirror
+          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION2/ /_}.zip" NSEmuHelper/NSFirmwareMirror
 
