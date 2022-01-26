@@ -9,32 +9,43 @@ jobs:
   Firmware:
     runs-on: ubuntu-latest
     steps:
+    
       - name: 安装 Python
         uses: actions/setup-python@v2.3.1
       - name: 安装阿里云盘 cli
         run: pip install aliyunpan
-      - name: 下载最新构建
+        
+      - name: 下载最新固件
         run: |
              cd /tmp
-             FWLIST_LATEST_ARR=($(curl "https://api.yidaozhan.gq/api/ns-firmware-latest.php"))
+             FWLIST_LATEST_STR=$(curl "https://api.yidaozhan.gq/api/ns-firmware-latest.php")
+             FWLIST_LATEST_ARR=($FWLIST_LATEST_STR)
+             echo "FWLIST_LATEST_STR=${FWLIST_LATEST_STR}" >> $GITHUB_ENV
+             for fw_version in ${FWLIST_LATEST_ARR[@]}
+             do 
+               echo "下载 ${fw_version}"
+               curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Firmware%20${fw_version}.zip" -o "/tmp/Firmware ${fw_version}.zip"
+             done
              
-             echo "下载 ${{ env.URL }}"
-             curl -fL "${{ env.URL }}" -o "/tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z"
-             
-      - name: 清空旧的构建
+      - name: 清空旧的固件
         continue-on-error: true
         env:
           refreshtoken: ${{ secrets.REFRESH_TOKEN }}
         run: |
-          echo "尝试清空构建文件夹"
-          FWTODELETE_ALI_ARR=($(aliyunpan-cli -t a729585ae5f34663bd1b6d82084a16d0 ls NSEmuHelper/NSFirmwareMirror | sed "s/\t/ /g")); echo ${FWTODELETE_ALI_ARR[@]}
+          echo "尝试清空固件文件夹"
+          FWTODELETE_ALI_ARR=($(aliyunpan-cli -t ${refreshtoken} ls NSEmuHelper/NSFirmwareMirror | sed "s/\t/ /g")); echo ${FWTODELETE_ALI_ARR[@]}
           for fw_name in ${FWTODELETE_ALI_ARR[@]}
           do
-            aliyunpan-cli -t a729585ae5f34663bd1b6d82084a16d0 rm "NSEmuHelper/NSFirmwareMirror/${fw_name/_/ }"
+            aliyunpan-cli -t ${refreshtoken} rm "NSEmuHelper/NSFirmwareMirror/${fw_name/_/ }"
           done
          
-      - name: 上传构建到阿里云盘
+      - name: 上传固件到阿里云盘
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${refreshtoken} upload -f /tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z NSEmuHelper/YuzuEAMirror
+        run: |
+          FWLIST_LATEST_ARR=(${{ env.FWLIST_LATEST_STR }})
+          for fw_version in ${FWLIST_LATEST_ARR[@]}
+          do
+            aliyunpan-cli -t ${refreshtoken} upload -f "/tmp/Firmware ${fw_version}.zip" NSEmuHelper/NSFirmwareMirror
+          done
 
