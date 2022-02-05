@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: 获取最新构建版本号和 URL
         run: |
-             VERSION=$(curl https://api.github.com/repos/pineappleea/pineapple-src/releases | grep "tag_name\": \"EA" | head -1)
+             VERSION=$(curl -H "Authorization: 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" "https://api.github.com/repos/pineappleea/pineapple-src/releases" | grep "tag_name\": \"EA" | head -1)
              VERSION=${VERSION// /};VERSION=${VERSION//\"/};VERSION=${VERSION//tag_name:EA-/};VERSION=${VERSION//,/}
              echo "版本号为：${VERSION}"
              URL="https://github.com/pineappleEA/pineapple-src/releases/download/EA-${VERSION}/Windows-Yuzu-EA-${VERSION}.7z"
@@ -98,8 +98,8 @@ jobs:
     steps:
       - name: 获取最新构建版本号和 URL
         run: |
-             VERSION=$(curl https://api.github.com/repos/yuzu-emu/yuzu-mainline/releases/latest | grep "tag_name\": \"mainline" | head -1)
-             VERSION=${VERSION// /};VERSION=${VERSION//\"/};VERSION=${VERSION//tag_name:mainline-0-/};VERSION=${VERSION//,/}
+             VERSION=$(curl -H "Authorization: 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" "https://api.github.com/repos/yuzu-emu/yuzu-mainline/releases/latest" | jq -r .tag_name)
+             VERSION=${VERSION//mainline-0-/};
              echo "版本号为：${VERSION}"
              URL=$(curl https://api.github.com/repos/yuzu-emu/yuzu-mainline/releases/latest | grep "browser_download_url" | grep "yuzu-windows-msvc" | grep "7z")
              URL=${URL// /};URL=${URL//\"/};URL=${URL//browser_download_url:/};URL=${URL//,/}
@@ -187,8 +187,7 @@ jobs:
     steps:
       - name: 获取最新构建版本号和 URL
         run: |
-             VERSION=$(curl https://api.github.com/repos/Ryujinx/release-channel-master/releases/latest | grep "tag_name" | head -1)
-             VERSION=${VERSION// /};VERSION=${VERSION//\"/};VERSION=${VERSION//tag_name:/};VERSION=${VERSION//,/}
+             VERSION=$(curl -H "Authorization: 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" "https://api.github.com/repos/Ryujinx/release-channel-master/releases/latest" | jq -r .tag_name)
              echo "版本号为：${VERSION}"
              URL="https://github.com/Ryujinx/release-channel-master/releases/download/${VERSION}/ryujinx-${VERSION}-win_x64.zip"
              echo "链接为：${URL}"
@@ -274,96 +273,3 @@ jobs:
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
         run: aliyunpan-cli -t ${refreshtoken} upload -f /tmp/ryujinx-${{ env.VERSION }}-win_x64.zip NSEmuHelper/RyujinxMainlineMirror
-
-  RyujinxCN:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 获取最新构建版本号和 URL
-        run: |
-             VERSION=$(curl https://api.github.com/repos/redball1017/Ryujinx-CN/releases/latest | grep "tag_name" | head -1)
-             VERSION=${VERSION// /};VERSION=${VERSION//\"/};VERSION=${VERSION//tag_name:/};VERSION=${VERSION//,/}
-             echo "版本号为：${VERSION}"
-             URL="https://github.com/redball1017/Ryujinx-CN/releases/download/${VERSION}/ryujinx-${VERSION}-win_x64.zip"
-             echo "链接为：${URL}"
-             echo "VERSION=${VERSION}" >> $GITHUB_ENV
-             echo "URL=${URL}" >> $GITHUB_ENV
-      - name: 安装 Python
-        uses: actions/setup-python@v2.3.1
-      - name: 安装阿里云盘 cli
-        run: pip install aliyunpan
-      - name: 检查构建是否重复
-        env:
-          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
-        run: |
-          BUILDS_LIST=$(aliyunpan-cli -t ${refreshtoken} ls NSEmuHelper/RyujinxCNMirror)
-          CHECK_REPEATED="No"
-          if [[ "${BUILDS_LIST}" =~ ${{ env.VERSION }} ]]; then
-          CHECK_REPEATED="Yes"
-          fi
-          echo "CHECK_REPEATED=${CHECK_REPEATED}" >> $GITHUB_ENV
-      - name: 下载最新构建
-        if: ${{ env.CHECK_REPEATED }} = "No"
-        run: |
-             cd /tmp
-             echo "下载 ${{ env.URL }}"
-             curl -fL "${{ env.URL }}" -o "/tmp/ryujinx-${{ env.VERSION }}-win_x64.zip"
-             
-      - name: 删除旧的构建5
-        continue-on-error: true
-        if: ${{ env.CHECK_REPEATED }} = "No"
-        env:
-          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
-        run: |
-          SMALLVERSION=$(echo ${VERSION//./\\n} | tail -1)
-          echo "尝试删除最新版本五个版本之前的构建"
-          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxCNMirror/ryujinx-$((SMALLVERSION-5))-win_x64.zip
-      - name: 删除旧的构建6
-        continue-on-error: true
-        if: ${{ env.CHECK_REPEATED }} = "No"
-        env:
-          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
-        run: |
-          SMALLVERSION=$(echo ${VERSION//./\\n} | tail -1)
-          echo "尝试删除最新版本五个版本之前的构建"
-          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxCNMirror/ryujinx-$((SMALLVERSION-6))-win_x64.zip
-      - name: 删除旧的构建7
-        continue-on-error: true
-        if: ${{ env.CHECK_REPEATED }} = "No"
-        env:
-          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
-        run: |
-          SMALLVERSION=$(echo ${VERSION//./\\n} | tail -1)
-          echo "尝试删除最新版本五个版本之前的构建"
-          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxCNMirror/ryujinx-$((SMALLVERSION-7))-win_x64.zip
-      - name: 删除旧的构建8
-        continue-on-error: true
-        if: ${{ env.CHECK_REPEATED }} = "No"
-        env:
-          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
-        run: |
-          SMALLVERSION=$(echo ${VERSION//./\\n} | tail -1)
-          echo "尝试删除最新版本五个版本之前的构建"
-          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxCNMirror/ryujinx-$((SMALLVERSION-8))-win_x64.zip
-      - name: 删除旧的构建9
-        continue-on-error: true
-        if: ${{ env.CHECK_REPEATED }} = "No"
-        env:
-          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
-        run: |
-          SMALLVERSION=$(echo ${VERSION//./\\n} | tail -1)
-          echo "尝试删除最新版本五个版本之前的构建"
-          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxCNMirror/ryujinx-$((SMALLVERSION-9))-win_x64.zip
-      - name: 删除旧的构建10
-        continue-on-error: true
-        if: ${{ env.CHECK_REPEATED }} = "No"
-        env:
-          refreshtoken: ${{ secrets.REFRESH_TOKEN }}
-        run: |
-          SMALLVERSION=$(echo ${VERSION//./\\n} | tail -1)
-          echo "尝试删除最新版本五个版本之前的构建"
-          aliyunpan-cli -t ${refreshtoken} rm NSEmuHelper/RyujinxCNMirror/ryujinx-$((SMALLVERSION-10))-win_x64.zip
-      - name: 上传构建到阿里云盘
-        if: ${{ env.CHECK_REPEATED }} = "No"
-        env:
-          refreshtoken: ${{secrets.REFRESH_TOKEN}}
-        run: aliyunpan-cli -t ${refreshtoken} upload -f /tmp/ryujinx-${{ env.VERSION }}-win_x64.zip NSEmuHelper/RyujinxCNMirror
