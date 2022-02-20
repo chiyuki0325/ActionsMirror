@@ -14,8 +14,8 @@ Ryujinx 汉化 Vulkan 版：https://pan.yidaozhan.gq/ns_emu_helper/RyujinxCNVulk
 
 NS 固件包：https://pan.yidaozhan.gq/ns_emu_helper/NSFirmwareMirror
 
-模拟器每隔三个小时自动从 Github Releases 同步最新版本，云端保留最新的五个版本。
+模拟器每隔四个小时自动从 Github Releases 同步最新版本，不定期删除旧版。
 
 Ryujinx 汉化版参见 https://github.com/YidaozhanYa/RyujinxCN 。
 
-固件每隔三天自动从互联网档案馆同步最新版本，云端保留最新的两个版本。
+固件每月四次自动从互联网档案馆同步最新版本，云端保留最新的两个版本。
