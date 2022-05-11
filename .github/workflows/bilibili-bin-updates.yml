@@ -10,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-
       - name: Set up ssh
         env:
           AUR_SSH_KEY: ${{ secrets.AUR_SSH_KEY }}
@@ -26,5 +24,7 @@ jobs:
           echo "${AUR_SSH_KNOWN_HOSTS}" | base64 -d > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/aur
           ls ~/.ssh
+      - name: Download script
+        run: wget "https://raw.githubusercontent.com/YidaozhanYa/ActionsMirror/main/check_bilibili_bin.sh"
       - name: Update PKGBUILD
-        run:   "bash check_bilibili_bin.sh "
+        run:  bash check_bilibili_bin.sh 
