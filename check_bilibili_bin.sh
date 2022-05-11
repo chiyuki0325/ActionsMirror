@@ -31,6 +31,8 @@ echo "Replacing \${sha256sums[0]}"
 sed -i "s/sha256sums=('${sha256sums[0]}'/sha256sums=('`sha256sum bili_win-install.exe | awk -F" " '{print $1}'`'/" ./bilibili-bin/PKGBUILD
 
 pushd bilibili-bin
+git config --global user.email "yidaozhan_ya@outlook.com"
+git config --global user.name "YidaozhanYa via GitHub Actions"
 git add .
 git commit -m "Updated by GitHub Actions on `date '+%Y/%m/%d %s'`"
 git push
