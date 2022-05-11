@@ -16,6 +16,7 @@ jobs:
         env:
           AUR_SSH_KEY: ${{ secrets.AUR_SSH_KEY }}
         run: |
+          mkdir -p ~/.ssh
           echo "Host aur.archlinux.org" >> ~/.ssh/config
           echo "    IdentityFile ~/.ssh/aur" >> ~/.ssh/config
           echo "     User YidaozhanYa" >> ~/.ssh/config
