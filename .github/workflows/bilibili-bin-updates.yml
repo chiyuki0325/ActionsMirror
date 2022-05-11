@@ -15,6 +15,7 @@ jobs:
       - name: Set up ssh
         env:
           AUR_SSH_KEY: ${{ secrets.AUR_SSH_KEY }}
+          AUR_SSH_KNOWN_HOSTS: ${{ secrets.AUR_SSH_KNOWN_HOSTS  }}
         run: |
           mkdir -p ~/.ssh
           echo "Host aur.archlinux.org" >> ~/.ssh/config
@@ -22,5 +23,7 @@ jobs:
           echo "     User YidaozhanYa" >> ~/.ssh/config
           echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDDEcdNQMxYl7vI7Zyk5442SYF6lhWlrbRUN6OAhpg0tUgICmNZGoHMuebAdCBIe72tmRer5WomGLeHCZwOKwGHwUAfHOjQ9zzlveRdmTAK1X2Fp//OB10+Pl6dGLiBcyXrGzTEUeZoUSW2qCqVgXNLYAuk0WtRefZc6LSWvn5xELXvPxQJ74XGt7JBMHaWZuoDAB+c2YzKM6JhFqWNGQhllxr3O0LpvupB3XledDts2eGozQf3y6HhL3LAv0nnUtIq64Ab4mbqWpDkiaUTAV2p48t9LRY6d8aD5p6Gjt17tqclpPpuUQTUn7PnMCnhbuue7xAa4/MiiFIw/D/TZ4HCbANmE3S8I2aPx5Cb7UqA2t+U9DF4PipOj9c/f4or3PHUuCKpLU5TLG4oNhr0yNvg16A2Q0QqQiGv7FCzgqJrW0n2PMKFL4fmIHFV/rjuIY1PCIdCb+jWdKxyXLbtndk4OJSTeCge9VLE2XjlPE1h9UgMOqpa5dXPVnz0rMBfGtE= yidaozhan@yidaozhan-PC" > ~/.ssh/aur.pub
           echo ${AUR_SSH_KEY} | base64 -d > ~/.ssh/aur
+          echo ${AUR_SSH_KNOWN_HOSTS} | base64 -d > ~/.ssh/known_hosts
+          ls ~/.ssh
       - name: Update PKGBUILD
         run:   "bash check_bilibili_bin.sh "
