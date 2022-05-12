@@ -15,17 +15,29 @@ jobs:
       - name: 安装阿里云盘 cli
         run: pip install aliyunpan
         
-      - name: 下载最新的 2 个固件
+      - name: 下载最新的 5 个固件
         run: |
              cd $HOME
-             VERSION=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -2 | tail -1)
+             VERSION1=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -2 | tail -1)
              VERSION2=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -3 | tail -1)
-             echo "下载 ${VERSION}"
-             echo "VERSION=${VERSION}" >> $GITHUB_ENV
-             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION}.zip" -o "${VERSION/ /_}.zip"
+             VERSION3=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -4 | tail -1)
+             VERSION4=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -5 | tail -1)
+             VERSION5=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -6 | tail -1)
+             echo "下载 ${VERSION1}"
+             echo "VERSION1=${VERSION1}" >> $GITHUB_ENV
+             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION1}.zip" -o "${VERSION1/ /_}.zip"
              echo "下载 ${VERSION2}"
              echo "VERSION2=${VERSION2}" >> $GITHUB_ENV
              aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION2}.zip" -o "${VERSION2/ /_}.zip"
+             echo "下载 ${VERSION3}"
+             echo "VERSION3=${VERSION3}" >> $GITHUB_ENV
+             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION2}.zip" -o "${VERSION3/ /_}.zip"
+             echo "下载 ${VERSION4}"
+             echo "VERSION4=${VERSION4}" >> $GITHUB_ENV
+             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION2}.zip" -o "${VERSION4/ /_}.zip"
+             echo "下载 ${VERSION5}"
+             echo "VERSION5=${VERSION5}" >> $GITHUB_ENV
+             aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION2}.zip" -o "${VERSION5/ /_}.zip"
              
       - name: 清空上次同步的固件
         continue-on-error: true
@@ -43,8 +55,14 @@ jobs:
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
         run: |
-          VERSION="${{ env.VERSION }}"
+          VERSION1="${{ env.VERSION1 }}"
           VERSION2="${{ env.VERSION2 }}"
-          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION/ /_}.zip" NSEmuHelper/NSFirmwareMirror
+          VERSION3="${{ env.VERSION3 }}"
+          VERSION4="${{ env.VERSION4 }}"
+          VERSION5="${{ env.VERSION5 }}"
+          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION1/ /_}.zip" NSEmuHelper/NSFirmwareMirror
           aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION2/ /_}.zip" NSEmuHelper/NSFirmwareMirror
+          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION3/ /_}.zip" NSEmuHelper/NSFirmwareMirror
+          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION4/ /_}.zip" NSEmuHelper/NSFirmwareMirror
+          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION5/ /_}.zip" NSEmuHelper/NSFirmwareMirror
 
