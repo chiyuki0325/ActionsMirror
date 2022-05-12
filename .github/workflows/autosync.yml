@@ -33,13 +33,13 @@ jobs:
           fi
           echo "CHECK_REPEATED=${CHECK_REPEATED}" >> $GITHUB_ENV
       - name: 下载最新构建
-        if: ${{ env.CHECK_REPEATED == "No" }}
+        if: ${{ env.CHECK_REPEATED == 'No' }}
         run: |
              cd /tmp
              echo "下载 ${{ env.URL }}"
              curl -fL "${{ env.URL }}" -o "/tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z"
       - name: 上传构建到阿里云盘
-        if: ${{ env.CHECK_REPEATED == "No" }}
+        if: ${{ env.CHECK_REPEATED == 'No' }}
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
         run: aliyunpan-cli -t ${refreshtoken} upload -f /tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z NSEmuHelper/YuzuEAMirror
@@ -72,14 +72,14 @@ jobs:
           fi
           echo "CHECK_REPEATED=${CHECK_REPEATED}" >> $GITHUB_ENV
       - name: 下载最新构建
-        if: ${{ env.CHECK_REPEATED == "No" }}
+        if: ${{ env.CHECK_REPEATED == 'No' }}
         run: |
              cd /tmp
              echo "下载 ${{ env.URL }}"
              curl -fL "${{ env.URL }}" -o "/tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z"
              
       - name: 上传构建到阿里云盘
-        if: ${{ env.CHECK_REPEATED == "No" }}
+        if: ${{ env.CHECK_REPEATED == 'No' }}
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
         run: aliyunpan-cli -t ${refreshtoken} upload -f /tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z NSEmuHelper/YuzuMainlineMirror
@@ -110,14 +110,14 @@ jobs:
           fi
           echo "CHECK_REPEATED=${CHECK_REPEATED}" >> $GITHUB_ENV
       - name: 下载最新构建
-        if: ${{ env.CHECK_REPEATED == "No" }}
+        if: ${{ env.CHECK_REPEATED == 'No' }}
         run: |
              cd /tmp
              echo "下载 ${{ env.URL }}"
              curl -fL "${{ env.URL }}" -o "/tmp/ryujinx-${{ env.VERSION }}-win_x64.zip"
              
       - name: 上传构建到阿里云盘
-        if: ${{ env.CHECK_REPEATED == "No" }}
+        if: ${{ env.CHECK_REPEATED == 'No' }}
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
         run: aliyunpan-cli -t ${refreshtoken} upload -f /tmp/ryujinx-${{ env.VERSION }}-win_x64.zip NSEmuHelper/RyujinxMainlineMirror
