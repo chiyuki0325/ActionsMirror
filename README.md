@@ -18,4 +18,8 @@ Ryujinx 汉化版参见 https://github.com/YidaozhanYa/RyujinxCN 。
 
 固件每月四次自动从互联网档案馆同步最新版本，云端保留最新的两个版本。
 
+---
+
+下面的徽章代表最新版的同步是否成功。因为某些不可抗网络因素，同步失败时有发生。
+
 [![NS 模拟器自动镜像同步](https://github.com/YidaozhanYa/ActionsMirror/actions/workflows/autosync.yml/badge.svg)](https://github.com/YidaozhanYa/ActionsMirror/actions/workflows/autosync.yml)
