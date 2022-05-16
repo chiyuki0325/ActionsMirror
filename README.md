@@ -8,9 +8,7 @@ Yuzu 主线版：https://nsemuhelper.herokuapp.com/YuzuMainlineMirror
 
 Ryujinx 主线版：https://nsemuhelper.herokuapp.com/RyujinxMainlineMirror
 
-Ryujinx 汉化版：https://nsemuhelper.herokuapp.com/RyujinxCNBuilds
-
-Ryujinx 汉化 Vulkan 版：https://nsemuhelper.herokuapp.com/RyujinxCNVulkanBuilds
+Ryujinx Ava 版：https://nsemuhelper.herokuapp.com/RyujinxAvaMirror
 
 NS 固件包：https://nsemuhelper.herokuapp.com/NSFirmwareMirror
 
@@ -19,3 +17,5 @@ NS 固件包：https://nsemuhelper.herokuapp.com/NSFirmwareMirror
 Ryujinx 汉化版参见 https://github.com/YidaozhanYa/RyujinxCN 。
 
 固件每月四次自动从互联网档案馆同步最新版本，云端保留最新的两个版本。
+
+[![NS 模拟器自动镜像同步](https://github.com/YidaozhanYa/ActionsMirror/actions/workflows/autosync.yml/badge.svg)](https://github.com/YidaozhanYa/ActionsMirror/actions/workflows/autosync.yml)
