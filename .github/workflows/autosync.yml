@@ -25,6 +25,7 @@ jobs:
       - name: 检查构建是否重复
         run: |
           CHECK_REPEATED="No"
+          echo "CHECK_REPEATED=${CHECK_REPEATED}" >> $GITHUB_ENV
           VERSION="${{ env.VERSION }}"
           rclone lsjson e5:/NSEmuHelper/YuzuEarlyAccess | jq -rc '.[]' | while read item;do
             TMP_VERSION="`printf "$item" | jq -rc '.Name' | awk -F'.' '{print $1}' | awk -F'-' '{print $4}'`"
@@ -64,6 +65,7 @@ jobs:
       - name: 检查构建是否重复
         run: |
           CHECK_REPEATED="No"
+          echo "CHECK_REPEATED=${CHECK_REPEATED}" >> $GITHUB_ENV
           VERSION="${{ env.VERSION }}"
           rclone lsjson e5:/NSEmuHelper/YuzuMainline | jq -rc '.[]' | while read item;do
             TMP_VERSION="`printf "$item" | jq -rc '.Name' | awk -F'.' '{print $1}' | awk -F'-' '{print $4}'`"
@@ -102,6 +104,7 @@ jobs:
       - name: 检查构建是否重复
         run: |
           CHECK_REPEATED="No"
+          echo "CHECK_REPEATED=${CHECK_REPEATED}" >> $GITHUB_ENV
           VERSION="${{ env.VERSION }}"
           rclone lsjson e5:/NSEmuHelper/Ryujinx | jq -rc '.[]' | while read item;do
             TMP_VERSION="`printf "$item" | jq -rc '.Name' | awk -F'.' '{print $1}' | awk -F'-' '{print $2}'`"
