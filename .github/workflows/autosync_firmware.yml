@@ -17,11 +17,12 @@ jobs:
       - name: 下载最新的 5 个固件
         run: |
              cd $HOME
-             VERSION1=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -2 | tail -1)
-             VERSION2=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -3 | tail -1)
-             VERSION3=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -4 | tail -1)
-             VERSION4=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -5 | tail -1)
-             VERSION5=$(curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware" | head -6 | tail -1)
+             FIRMWARE_LIST="`curl -fsL "https://archive.org/download/nintendo-switch-global-firmwares/Official%20Global%20Firmware%20MD5%20Hashs.txt" | sed 's/\t/\n/g' | grep "Firmware"`"
+             VERSION1=$(printf "$FIRMWARE_LIST" | head -2 | tail -1)
+             VERSION2=$(printf "$FIRMWARE_LIST" | head -3 | tail -1)
+             VERSION3=$(printf "$FIRMWARE_LIST" | head -4 | tail -1)
+             VERSION4=$(printf "$FIRMWARE_LIST" | head -5 | tail -1)
+             VERSION5=$(printf "$FIRMWARE_LIST" | head -6 | tail -1)
              echo "下载 ${VERSION1}"
              echo "VERSION1=${VERSION1}" >> $GITHUB_ENV
              aria2c -s8 -j8 -x8 "https://archive.org/download/nintendo-switch-global-firmwares/${VERSION1}.zip" -o "${VERSION1/ /_}.zip"
