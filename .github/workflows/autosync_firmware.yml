@@ -9,12 +9,11 @@ jobs:
   Firmware:
     runs-on: ubuntu-latest
     steps:
-    
-      - name: 安装 Python
-        uses: actions/setup-python@v2.3.1
-      - name: 安装阿里云盘 cli
-        run: pip install aliyunpan
-        
+      - name: 安装 rclone
+        uses: AnimMouse/setup-rclone@v1
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+          
       - name: 下载最新的 5 个固件
         run: |
              cd $HOME
@@ -45,13 +44,10 @@ jobs:
           refreshtoken: ${{ secrets.REFRESH_TOKEN }}
         run: |
           echo "尝试清空固件文件夹"
-          FWTODELETE_ALI_ARR=($(aliyunpan-cli -t ${refreshtoken} ls NSEmuHelper/NSFirmwareMirror | sed "s/\t/ /g")); echo ${FWTODELETE_ALI_ARR[@]}
-          for fw_name in ${FWTODELETE_ALI_ARR[@]}
-          do
-            aliyunpan-cli -t ${refreshtoken} rm "NSEmuHelper/NSFirmwareMirror/${fw_name}"
-          done
+          rclone delete 'e5:/NSEmuHelper/NSFirmware'
+          rclone mkdir 'e5:/NSEmuHelper/NSFirmware'
          
-      - name: 上传固件到阿里云盘
+      - name: 上传固件到 OneDrive
         env:
           refreshtoken: ${{secrets.REFRESH_TOKEN}}
         run: |
@@ -60,9 +56,9 @@ jobs:
           VERSION3="${{ env.VERSION3 }}"
           VERSION4="${{ env.VERSION4 }}"
           VERSION5="${{ env.VERSION5 }}"
-          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION1/ /_}.zip" NSEmuHelper/NSFirmwareMirror
-          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION2/ /_}.zip" NSEmuHelper/NSFirmwareMirror
-          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION3/ /_}.zip" NSEmuHelper/NSFirmwareMirror
-          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION4/ /_}.zip" NSEmuHelper/NSFirmwareMirror
-          aliyunpan-cli -t ${refreshtoken} upload -f "$HOME/${VERSION5/ /_}.zip" NSEmuHelper/NSFirmwareMirror
+          rclone copy "$HOME/${VERSION1/ /_}.zip" e5:/NSEmuHelper/NSFirmware
+          rclone copy "$HOME/${VERSION2/ /_}.zip" e5:/NSEmuHelper/NSFirmware
+          rclone copy "$HOME/${VERSION3/ /_}.zip" e5:/NSEmuHelper/NSFirmware
+          rclone copy "$HOME/${VERSION4/ /_}.zip" e5:/NSEmuHelper/NSFirmware
+          rclone copy "$HOME/${VERSION5/ /_}.zip" e5:/NSEmuHelper/NSFirmware
 
