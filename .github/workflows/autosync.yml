@@ -40,7 +40,7 @@ jobs:
         run: |
              cd /tmp
              echo "下载 ${{ env.URL }}"
-             curl -fL "${{ env.URL }}" -o "/tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z"
+             curl --retry 5 --retry-delay 2 -fL "${{ env.URL }}" -o "/tmp/Windows-Yuzu-EA-${{ env.VERSION }}.7z"
       - name: 上传构建到 OneDrive
         if: ${{ env.CHECK_REPEATED == 'No' }}
         run: |
@@ -80,7 +80,7 @@ jobs:
         run: |
              cd /tmp
              echo "下载 ${{ env.URL }}"
-             curl -fL "${{ env.URL }}" -o "/tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z"
+             curl --retry 5 --retry-delay 2 -fL "${{ env.URL }}" -o "/tmp/yuzu-windows-msvc-${{ env.VERSION }}.7z"
       - name: 上传构建到 OneDrive
         if: ${{ env.CHECK_REPEATED == 'No' }}
         run: |
@@ -119,7 +119,7 @@ jobs:
         run: |
              cd /tmp
              echo "下载 ${{ env.URL }}"
-             curl -fL "${{ env.URL }}" -o "/tmp/ryujinx-${{ env.VERSION }}-win_x64.zip"
+             curl --retry 5 --retry-delay 2 -fL "${{ env.URL }}" -o "/tmp/ryujinx-${{ env.VERSION }}-win_x64.zip"
       - name: 上传构建到 OneDrive
         if: ${{ env.CHECK_REPEATED == 'No' }}
         run: |
