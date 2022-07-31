@@ -12,9 +12,13 @@ Ryujinx Ava 版：https://pan.yidaozhan.top/ns_emu_helper/RyujinxAva
 
 NS 固件包：https://pan.yidaozhan.top/ns_emu_helper/NSFirmware
 
-模拟器每隔四个小时自动从 Github Releases 同步最新版本，不定期删除旧版。
+模拟器每隔四个小时自动从 GitHub Releases 同步最新版本，不定期删除旧版。
 
 固件每月四次自动从互联网档案馆同步最新版本，云端保留最新的两个版本。
+
+---
+
+将链接中的 `ns_emu_helper` 换成 `ns_emu_helper_cdn`，既为带 CDN 的链接，在部分地区可能会提速。
 
 ---
 
